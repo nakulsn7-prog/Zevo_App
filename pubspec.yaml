@@ -36,17 +36,16 @@ dependencies:
   go_router: ^14.2.0
   share_plus: ^10.0.0
 
-  # Local Monorepo Packages
   database_client:
-    path: ../../packages/database_client
+    path: packages/database_client
   auth:
-    path: ../../packages/auth
+    path: packages/auth
   squad:
-    path: ../../packages/squad
+    path: packages/squad
   workout:
-    path: ../../packages/workout
+    path: packages/workout
   division:
-    path: ../../packages/division
+    path: packages/division
 
 
 dev_dependencies:

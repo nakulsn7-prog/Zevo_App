@@ -4,7 +4,45 @@
 *.pyc
 *.swp
 .DS_Store
-Thumbs.db
+.atom/
+.build/
+.buildlog/
+.history
+.svn/
+.swiftpm/
+migrate_working_dir/
+
+# IntelliJ related
+*.iml
+*.ipr
+*.iws
+.idea/
+
+# The .vscode folder contains launch configuration and tasks you configure in
+# VS Code which you may wish to be included in version control, so this line
+# is commented out by default.
+#.vscode/
+
+# Flutter/Dart/Pub related
+**/doc/api/
+**/ios/Flutter/.last_build_id
+.dart_tool/
+.flutter-plugins-dependencies
+.pub-cache/
+.pub/
+/build/
+/coverage/
+
+# Symbolication related
+app.*.symbols
+
+# Obfuscation related
+app.*.map.json
+
+# Android Studio will place build artifacts here
+/android/app/debug
+/android/app/profile
+/android/app/release
 
 # Dotenv local files
 .env
@@ -13,54 +51,4 @@ Thumbs.db
 .env.test.local
 .env.production.local
 *.env
-
-# But do not ignore .env.example
 !.env.example
-
-# Android-specific
-*.keystore
-*.jks
-*.apk
-*.aar
-*.jar
-*.ap_
-*.aab
-/apps/zevo_app/android/key.properties
-/apps/zevo_app/android/app/src/main/assets/
-
-# iOS-specific
-*.ipa
-*.dSYM.zip
-*.dSYM/
-
-# Dart/Flutter
-.dart_tool/
-.packages
-.flutter-plugins
-.flutter-plugins-dependencies
-.metadata
-/apps/zevo_app/.flutter-plugins
-/apps/zevo_app/.flutter-plugins-dependencies
-/apps/zevo_app/ios/Pods/
-/apps/zevo_app/ios/.symlinks/
-/apps/zevo_app/ios/Flutter/Flutter.framework
-/apps/zevo_app/ios/Flutter/Flutter.podspec
-/apps/zevo_app/ios/Flutter/Generated.xcconfig
-/apps/zevo_app/ios/Flutter/flutter_export_environment.sh
-
-# Build directories
-build/
-/apps/zevo_app/build/
-
-# Package-specific locks
-pubspec.lock
-/apps/zevo_app/pubspec.lock
-
-# IDE-specific
-.idea/
-.vscode/
-*.imap
-*.launch
-*.project
-*.sublime-workspace
-*.sublime-project
