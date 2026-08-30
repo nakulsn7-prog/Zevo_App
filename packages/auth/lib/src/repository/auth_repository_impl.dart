@@ -67,27 +67,28 @@ class AuthRepositoryImpl implements AuthRepository {
     required String email,
     required String password,
   }) async {
-    try {
-      final response = await _dbClient.client.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
+    final response = await _dbClient.client.auth.signInWithPassword(
+      email: email,
+      password: password,
+    );
 
-      final user = response.user;
-      if (user == null) {
-        throw Exception('Log in failed: User is null');
-      }
-
-      final profile = await fetchUserProfile(user.id);
-      if (profile == null) {
-        throw Exception('User profile not found after login');
-      }
-
-      _currentUserProfile = profile;
-      return profile;
-    } catch (e) {
-      rethrow;
+    final user = response.user;
+    if (user == null) {
+      throw Exception('Log in failed: User is null');
     }
+
+    // Fetch profile from DB; fall back to a basic profile if the row
+    // hasn't been created yet by the DB trigger.
+    final profile = await fetchUserProfile(user.id) ??
+        UserProfile(
+          id: user.id,
+          fullName: user.userMetadata?['full_name'] as String? ?? '',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+
+    _currentUserProfile = profile;
+    return profile;
   }
 
   @override
@@ -107,9 +108,15 @@ class AuthRepositoryImpl implements AuthRepository {
 
       if (data == null) return null;
       return UserProfile.fromJson(data);
-    } catch (_) {
+    } catch (e) {
       return null;
     }
+  }
+
+  /// Returns the current Supabase session, if any.
+  Future<bool> hasActiveSession() async {
+    final session = _dbClient.client.auth.currentSession;
+    return session != null;
   }
 
   /// Cleans up resources.

@@ -9,7 +9,7 @@ class AppConfig {
   /// The public anonymous key for the Supabase API.
   static const String supabaseAnonKey = String.fromEnvironment(
     'SUPABASE_ANON_KEY',
-    defaultValue: '',
+    defaultValue: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRrcm9naGNxd3pkcmRmbHFvdXF1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY1NTI4NzEsImV4cCI6MjEwMjEyODg3MX0.rrKxsdjxBGCAqV5_TqNgjHwP2R18CfyxOB9sBk3nkC4',
   );
 
   /// Validates that the configurations are not empty.

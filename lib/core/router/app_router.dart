@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:zevo_app/features/auth/views/splash_view.dart';
+import 'package:zevo_app/features/auth/views/login_view.dart';
+import 'package:zevo_app/features/auth/views/create_account_view.dart';
+import 'package:zevo_app/features/auth/views/authenticated_view.dart';
 
 /// Centralized route paths for the Zevo application.
 class AppRoutes {
@@ -12,6 +16,7 @@ class AppRoutes {
   static const String division = '/division';
   static const String squad = '/squad';
   static const String profile = '/profile';
+  static const String authenticated = '/authenticated';
 }
 
 /// Central router configuration for the application.
@@ -23,15 +28,19 @@ class AppRouter {
     routes: [
       GoRoute(
         path: AppRoutes.splash,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Splash Screen'),
+        builder: (context, state) => const SplashView(),
       ),
       GoRoute(
         path: AppRoutes.login,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Login Screen'),
+        builder: (context, state) => const LoginView(),
       ),
       GoRoute(
         path: AppRoutes.signup,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Create Account Screen'),
+        builder: (context, state) => const CreateAccountView(),
+      ),
+      GoRoute(
+        path: AppRoutes.authenticated,
+        builder: (context, state) => const AuthenticatedView(),
       ),
       GoRoute(
         path: AppRoutes.journey,
