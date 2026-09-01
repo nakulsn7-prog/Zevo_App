@@ -4,6 +4,7 @@ class UserProfile {
   final String fullName;
   final String? username;
   final String? avatarUrl;
+  final String? journeyChoice;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -12,6 +13,7 @@ class UserProfile {
     required this.fullName,
     this.username,
     this.avatarUrl,
+    this.journeyChoice,
     required this.createdAt,
     required this.updatedAt,
   });
@@ -23,6 +25,7 @@ class UserProfile {
       fullName: json['full_name'] as String? ?? 'ZEVO User',
       username: json['username'] as String?,
       avatarUrl: json['avatar_url'] as String?,
+      journeyChoice: json['journey_choice'] as String?,
       createdAt: DateTime.parse(json['created_at'] as String),
       updatedAt: DateTime.parse(json['updated_at'] as String),
     );
@@ -35,6 +38,7 @@ class UserProfile {
       'full_name': fullName,
       'username': username,
       'avatar_url': avatarUrl,
+      'journey_choice': journeyChoice,
       'created_at': createdAt.toIso8601String(),
       'updated_at': updatedAt.toIso8601String(),
     };

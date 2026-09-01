@@ -26,4 +26,7 @@ abstract class AuthRepository {
 
   /// Fetches the user profile for a given user ID.
   Future<UserProfile?> fetchUserProfile(String userId);
+
+  /// Persists the user's journey choice (e.g. 'solo' or 'squad').
+  Future<void> setJourneyChoice(String userId, String choice);
 }

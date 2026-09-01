@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../core/router/app_router.dart';
 import '../bloc/auth_bloc.dart';
 import '../bloc/auth_event.dart';
 import '../bloc/auth_state.dart';
@@ -111,7 +112,7 @@ class _CreateAccountViewState extends State<CreateAccountView> {
         child: BlocConsumer<AuthBloc, AuthState>(
           listener: (context, state) {
             if (state is Authenticated) {
-              context.go('/authenticated');
+              context.go(resolveJourneyRoute(state.profile.journeyChoice));
             } else if (state is AuthError) {
               ScaffoldMessenger.of(
                 context,

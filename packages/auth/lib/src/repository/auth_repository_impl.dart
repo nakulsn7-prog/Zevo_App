@@ -113,6 +113,28 @@ class AuthRepositoryImpl implements AuthRepository {
     }
   }
 
+  @override
+  Future<void> setJourneyChoice(String userId, String choice) async {
+    await _dbClient.client
+        .from('profiles')
+        .update({'journey_choice': choice})
+        .eq('id', userId);
+
+    // Update the in-memory profile so the app immediately reflects the change.
+    final current = _currentUserProfile;
+    if (current != null) {
+      _currentUserProfile = UserProfile(
+        id: current.id,
+        fullName: current.fullName,
+        username: current.username,
+        avatarUrl: current.avatarUrl,
+        journeyChoice: choice,
+        createdAt: current.createdAt,
+        updatedAt: current.updatedAt,
+      );
+    }
+  }
+
   /// Returns the current Supabase session, if any.
   Future<bool> hasActiveSession() async {
     final session = _dbClient.client.auth.currentSession;

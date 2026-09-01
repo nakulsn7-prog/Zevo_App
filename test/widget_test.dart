@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:zevo_app/main.dart';
 import 'package:auth/auth.dart';
@@ -24,6 +25,8 @@ class MockAuthRepository implements AuthRepository {
   Future<UserProfile?> fetchUserProfile(String userId) async {
     return null;
   }
+  @override
+  Future<void> setJourneyChoice(String userId, String choice) async {}
 }
 
 class MockSquadRepository implements SquadRepository {
@@ -78,7 +81,8 @@ void main() {
       ),
     );
 
-    // Verify it renders the initial Splash screen placeholder
-    expect(find.text('Splash Screen'), findsOneWidget);
+    // Verify it renders the initial Splash screen branding
+    expect(find.text('ZEVO'), findsOneWidget);
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 }
