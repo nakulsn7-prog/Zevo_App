@@ -17,7 +17,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         // Check live Supabase session — works correctly on cold start
         final session = _authRepository is AuthRepositoryImpl
-            ? await (_authRepository as AuthRepositoryImpl).hasActiveSession()
+            ? await _authRepository.hasActiveSession()
             : _authRepository.currentUserProfile != null;
         if (session) {
           final profile = _authRepository.currentUserProfile;
