@@ -1,3 +1,4 @@
+import 'package:auth/auth.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AuthState extends Equatable {
@@ -15,7 +16,14 @@ class Unauthenticated extends AuthState { const Unauthenticated(); }
 
 class Authenticating extends AuthState { const Authenticating(); }
 
-class Authenticated extends AuthState { const Authenticated(); }
+class Authenticated extends AuthState {
+  final UserProfile profile;
+
+  const Authenticated(this.profile);
+
+  @override
+  List<Object?> get props => [profile];
+}
 
 class SignupSuccess extends AuthState { const SignupSuccess(); }
 

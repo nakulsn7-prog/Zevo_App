@@ -1,3 +1,4 @@
+import 'package:auth/auth.dart';
 import 'package:equatable/equatable.dart';
 
 abstract class AuthEvent extends Equatable {
@@ -32,11 +33,20 @@ class SignupRequested extends AuthEvent {
 
 class LogoutRequested extends AuthEvent {}
 
-class AuthStateChanged extends AuthEvent {
-  final bool isAuthenticated;
+class SetJourneyChoice extends AuthEvent {
+  final String choice;
 
-  const AuthStateChanged(this.isAuthenticated);
+  const SetJourneyChoice(this.choice);
 
   @override
-  List<Object?> get props => [isAuthenticated];
+  List<Object?> get props => [choice];
+}
+
+class AuthStateChanged extends AuthEvent {
+  final UserProfile? profile;
+
+  const AuthStateChanged(this.profile);
+
+  @override
+  List<Object?> get props => [profile];
 }

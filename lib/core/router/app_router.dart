@@ -1,9 +1,10 @@
-import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:zevo_app/features/auth/views/splash_view.dart';
 import 'package:zevo_app/features/auth/views/login_view.dart';
 import 'package:zevo_app/features/auth/views/create_account_view.dart';
 import 'package:zevo_app/features/auth/views/authenticated_view.dart';
+import 'package:zevo_app/features/journey/views/journey_view.dart';
+import 'package:zevo_app/features/home/views/home_view.dart';
 
 /// Centralized route paths for the Zevo application.
 class AppRoutes {
@@ -12,11 +13,21 @@ class AppRoutes {
   static const String signup = '/signup';
   static const String journey = '/journey';
   static const String dashboard = '/dashboard';
-  static const String logWorkout = '/log-workout';
-  static const String division = '/division';
-  static const String squad = '/squad';
-  static const String profile = '/profile';
   static const String authenticated = '/authenticated';
+}
+
+/// Resolves the post-authentication route based on the user's journey choice.
+///
+/// - null (onboarding not completed) or unexpected values -> /journey
+/// - 'solo' or 'squad' -> /dashboard (Locked Home View in Phase 2)
+String resolveJourneyRoute(String? journeyChoice) {
+  switch (journeyChoice) {
+    case 'solo':
+    case 'squad':
+      return AppRoutes.dashboard;
+    default:
+      return AppRoutes.journey;
+  }
 }
 
 /// Central router configuration for the application.
@@ -44,46 +55,12 @@ class AppRouter {
       ),
       GoRoute(
         path: AppRoutes.journey,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Choose Your Journey'),
+        builder: (context, state) => const JourneyView(),
       ),
       GoRoute(
         path: AppRoutes.dashboard,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Dashboard Screen'),
-      ),
-      GoRoute(
-        path: AppRoutes.logWorkout,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Log Workout'),
-      ),
-      GoRoute(
-        path: AppRoutes.division,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Division Leaderboard'),
-      ),
-      GoRoute(
-        path: AppRoutes.squad,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Squad Screen'),
-      ),
-      GoRoute(
-        path: AppRoutes.profile,
-        builder: (context, state) => const _PlaceholderScreen(title: 'Profile Screen'),
+        builder: (context, state) => const HomeView(),
       ),
     ],
   );
-}
-
-class _PlaceholderScreen extends StatelessWidget {
-  final String title;
-
-  const _PlaceholderScreen({required this.title});
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      body: Center(
-        child: Text(
-          title,
-          style: Theme.of(context).textTheme.titleLarge,
-        ),
-      ),
-    );
-  }
 }

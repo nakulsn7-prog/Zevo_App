@@ -9,7 +9,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc(this._authRepository) : super(const AuthInitial()) {
     // Subscribe to auth state changes from Supabase
     _authRepository.authStateChanges.listen((profile) {
-      add(AuthStateChanged(profile != null));
+      add(AuthStateChanged(profile));
     });
 
     on<CheckAuthSession>((event, emit) async {
@@ -17,10 +17,15 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         // Check live Supabase session — works correctly on cold start
         final session = _authRepository is AuthRepositoryImpl
-            ? await (_authRepository as AuthRepositoryImpl).hasActiveSession()
+            ? await _authRepository.hasActiveSession()
             : _authRepository.currentUserProfile != null;
         if (session) {
-          emit(const Authenticated());
+          final profile = _authRepository.currentUserProfile;
+          // The auth-state subscription also emits Authenticated(profile) with
+          // the fetched profile on cold start; prefer it when already loaded.
+          if (profile != null) {
+            emit(Authenticated(profile));
+          }
         } else {
           emit(const Unauthenticated());
         }
@@ -32,8 +37,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     on<LoginRequested>((event, emit) async {
       emit(const Authenticating());
       try {
-        await _authRepository.logIn(email: event.email, password: event.password);
-        emit(const Authenticated());
+        final profile = await _authRepository.logIn(
+          email: event.email,
+          password: event.password,
+        );
+        emit(Authenticated(profile));
       } catch (e) {
         // Print full error for debugging
         // ignore: avoid_print
@@ -50,8 +58,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       try {
         await _authRepository.signUp(email: event.email, password: event.password, fullName: event.fullName);
         // After successful signup, automatically log in
-        await _authRepository.logIn(email: event.email, password: event.password);
-        emit(const Authenticated());
+        final profile = await _authRepository.logIn(
+          email: event.email,
+          password: event.password,
+        );
+        emit(Authenticated(profile));
       } catch (e) {
         emit(AuthError(e.toString()));
       }
@@ -63,9 +74,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(const Unauthenticated());
     });
 
+    on<SetJourneyChoice>((event, emit) async {
+      final currentProfile = _authRepository.currentUserProfile;
+      if (currentProfile == null) {
+        emit(const AuthError('You must be signed in to choose a journey.'));
+        return;
+      }
+      if (event.choice != 'solo' && event.choice != 'squad') {
+        emit(const AuthError('Invalid journey choice.'));
+        return;
+      }
+      try {
+        await _authRepository.setJourneyChoice(currentProfile.id, event.choice);
+        emit(Authenticated(_authRepository.currentUserProfile ?? currentProfile));
+      } catch (_) {
+        emit(const AuthError('Could not save your journey choice. Please try again.'));
+      }
+    });
+
     on<AuthStateChanged>((event, emit) {
-      if (event.isAuthenticated) {
-        emit(const Authenticated());
+      if (event.profile != null) {
+        emit(Authenticated(event.profile!));
       } else {
         emit(const Unauthenticated());
       }
