@@ -9,6 +9,7 @@ abstract class SquadRepository {
   /// Creates a new squad.
   Future<Squad> createSquad({
     required String name,
+    String? logoUrl,
     required bool isPrivate,
   });
 
@@ -23,4 +24,16 @@ abstract class SquadRepository {
 
   /// Gets the current active invite code for the squad.
   Future<String?> getActiveInviteCode(String squadId);
+
+  /// Transfers ownership to another member.
+  Future<void> transferOwnership(String newCaptainId);
+
+  /// Removes a member from the squad.
+  Future<void> removeMember(String userId);
+
+  /// Deletes the squad.
+  Future<void> deleteSquad();
+
+  /// Regenerates the squad invite code and returns the new code.
+  Future<String> regenerateInviteCode();
 }

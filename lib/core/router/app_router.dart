@@ -5,6 +5,8 @@ import 'package:zevo_app/features/auth/views/create_account_view.dart';
 import 'package:zevo_app/features/auth/views/authenticated_view.dart';
 import 'package:zevo_app/features/journey/views/journey_view.dart';
 import 'package:zevo_app/features/home/views/home_view.dart';
+import 'package:zevo_app/features/squad/views/create_squad_view.dart';
+import 'package:zevo_app/features/squad/views/join_squad_view.dart';
 
 /// Centralized route paths for the Zevo application.
 class AppRoutes {
@@ -14,6 +16,8 @@ class AppRoutes {
   static const String journey = '/journey';
   static const String dashboard = '/dashboard';
   static const String authenticated = '/authenticated';
+  static const String createSquad = '/squad/create';
+  static const String joinSquad = '/squad/join';
 }
 
 /// Resolves the post-authentication route based on the user's journey choice.
@@ -60,6 +64,14 @@ class AppRouter {
       GoRoute(
         path: AppRoutes.dashboard,
         builder: (context, state) => const HomeView(),
+      ),
+      GoRoute(
+        path: AppRoutes.createSquad,
+        builder: (context, state) => const CreateSquadView(),
+      ),
+      GoRoute(
+        path: AppRoutes.joinSquad,
+        builder: (context, state) => const JoinSquadView(),
       ),
     ],
   );
