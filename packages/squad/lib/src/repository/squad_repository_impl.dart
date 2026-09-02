@@ -19,6 +19,8 @@ class SquadRepositoryImpl implements SquadRepository {
       
       if (response is List && response.isNotEmpty) {
         return Squad.fromJson(response.first as Map<String, dynamic>);
+      } else if (response is List && response.isEmpty) {
+        return null;
       } else if (response is Map) {
         return Squad.fromJson(response as Map<String, dynamic>);
       }
@@ -42,7 +44,7 @@ class SquadRepositoryImpl implements SquadRepository {
         }
 
         return Squad.fromJson(memberData['squads'] as Map<String, dynamic>);
-      } catch (e) {
+      } catch (_) {
         return null;
       }
     }
@@ -51,26 +53,26 @@ class SquadRepositoryImpl implements SquadRepository {
   @override
   Future<Squad> createSquad({
     required String name,
+    String? logoUrl,
     required bool isPrivate,
   }) async {
     try {
       final squadId = await _dbClient.client.rpc('create_squad', params: {
-        'squad_name': name,
-        'is_private': isPrivate,
+        'p_name': name,
+        'p_logo_url': logoUrl,
+        'p_is_private': isPrivate,
       });
 
       if (squadId == null) {
         throw Exception('Failed to create squad: ID returned was null');
       }
 
-      // Fetch newly created squad details
-      final squadData = await _dbClient.client
-          .from('squads')
-          .select()
-          .eq('id', squadId)
-          .single();
-
-      return Squad.fromJson(squadData);
+      // Fetch newly created squad details using the RPC
+      final squad = await getMySquad();
+      if (squad == null) {
+        throw Exception('Squad was created but could not be retrieved.');
+      }
+      return squad;
     } catch (e) {
       rethrow;
     }
@@ -80,21 +82,19 @@ class SquadRepositoryImpl implements SquadRepository {
   Future<Squad> joinSquad(String inviteCode) async {
     try {
       final squadId = await _dbClient.client.rpc('join_squad', params: {
-        'invite_code': inviteCode,
+        'p_invite_code': inviteCode,
       });
 
       if (squadId == null) {
         throw Exception('Failed to join squad: ID returned was null');
       }
 
-      // Fetch squad details
-      final squadData = await _dbClient.client
-          .from('squads')
-          .select()
-          .eq('id', squadId)
-          .single();
-
-      return Squad.fromJson(squadData);
+      // Fetch squad details using the RPC
+      final squad = await getMySquad();
+      if (squad == null) {
+        throw Exception('Joined squad but could not retrieve it.');
+      }
+      return squad;
     } catch (e) {
       rethrow;
     }
@@ -140,6 +140,48 @@ class SquadRepositoryImpl implements SquadRepository {
       return data['invite_code'] as String?;
     } catch (_) {
       return null;
+    }
+  }
+
+  @override
+  Future<void> transferOwnership(String newCaptainId) async {
+    try {
+      await _dbClient.client.rpc('transfer_squad_ownership', params: {
+        'p_new_captain_id': newCaptainId,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> removeMember(String userId) async {
+    try {
+      await _dbClient.client.rpc('remove_squad_member', params: {
+        'p_user_id': userId,
+      });
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<void> deleteSquad() async {
+    try {
+      await _dbClient.client.rpc('delete_squad');
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+  @override
+  Future<String> regenerateInviteCode() async {
+    try {
+      final newCode = await _dbClient.client.rpc('regenerate_squad_invite');
+      if (newCode == null) throw Exception('Failed to regenerate invite code');
+      return newCode as String;
+    } catch (e) {
+      rethrow;
     }
   }
 }

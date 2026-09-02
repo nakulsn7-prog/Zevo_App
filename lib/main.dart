@@ -9,6 +9,7 @@ import 'package:division/division.dart';
 import 'core/config/config.dart';
 import 'core/theme/zevo_theme.dart';
 import 'core/router/app_router.dart';
+import 'package:zevo_app/features/squad/bloc/squad_bloc.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -62,8 +63,15 @@ Widget build(BuildContext context) {
       RepositoryProvider<WorkoutRepository>.value(value: workoutRepository),
       RepositoryProvider<DivisionRepository>.value(value: divisionRepository),
     ],
-    child: BlocProvider<AuthBloc>(
-      create: (context) => AuthBloc(authRepository),
+    child: MultiBlocProvider(
+      providers: [
+        BlocProvider<AuthBloc>(
+          create: (context) => AuthBloc(authRepository),
+        ),
+        BlocProvider<SquadBloc>(
+          create: (context) => SquadBloc(squadRepository: squadRepository),
+        ),
+      ],
       child: MaterialApp.router(
         title: 'ZEVO',
         debugShowCheckedModeBanner: false,

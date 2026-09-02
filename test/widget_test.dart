@@ -33,7 +33,7 @@ class MockSquadRepository implements SquadRepository {
   @override
   Future<Squad?> getMySquad() async => null;
   @override
-  Future<Squad> createSquad({required String name, required bool isPrivate}) async {
+  Future<Squad> createSquad({required String name, String? logoUrl, required bool isPrivate}) async {
     throw UnimplementedError();
   }
   @override
@@ -46,6 +46,14 @@ class MockSquadRepository implements SquadRepository {
   Future<List<SquadMember>> getMembers(String squadId) async => [];
   @override
   Future<String?> getActiveInviteCode(String squadId) async => null;
+  @override
+  Future<void> transferOwnership(String newCaptainId) async {}
+  @override
+  Future<void> removeMember(String userId) async {}
+  @override
+  Future<void> deleteSquad() async {}
+  @override
+  Future<String> regenerateInviteCode() async => 'ZEVO-TEST';
 }
 
 class MockWorkoutRepository implements WorkoutRepository {
